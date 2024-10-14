@@ -15,12 +15,11 @@ interface TradeRecord {
   author: string;
   datetime: string;
   pnl: number;
-  status: 'WIN' | 'LOSE';
   currencyPair: string;
 }
 
 app.post('/trades', async (req: Request<{}, {}, TradeRecord>, res: Response) => {
-  const { name, author, datetime, pnl, status, currencyPair } = req.body;
+  const { name, author, datetime, pnl, currencyPair } = req.body;
 
   try {
     if (!databaseId) {
@@ -30,22 +29,19 @@ app.post('/trades', async (req: Request<{}, {}, TradeRecord>, res: Response) => 
     const response = await notion.pages.create({
       parent: { database_id: databaseId },
       properties: {
-        Name: { 
-          title: [{ text: { content: name } }] 
+        Name: {
+          title: [{ text: { content: name } }],
         },
-        Datetime: { 
-          date: { start: datetime } 
+        Datetime: {
+          date: { start: datetime },
         },
-        "Profit / Loss": { 
-          number: pnl 
+        'Profit / Loss': {
+          number: pnl,
         },
-        Status: { 
-          select: { name: status === 'WIN' ? 'Success' : 'Failed' } 
+        Symbol: {
+          select: { name: currencyPair },
         },
-        Symbol: { 
-          select: { name: currencyPair } 
-        }
-      }
+      },
     });
 
     res.status(201).json({ message: 'Trade record created successfully', id: response.id });
