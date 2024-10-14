@@ -1,4 +1,5 @@
 {
+  "type": "module",
   "name": "tcl_calc_be",
   "version": "1.0.0",
   "main": "index.js",
